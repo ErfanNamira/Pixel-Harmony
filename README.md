@@ -1,4 +1,4 @@
-# Pixel-Harmony 🖼️
+# Pixel Harmony 🖼️
 Pixel Harmony is a Python script designed to analyze and compare the quality of two images using various metrics. It provides insights into the similarity and quality difference between the images by utilizing metrics such as SSIM, PSNR, Absolute Error, Mean Absolute Error, Normalized Cross-Correlation, Root Mean Squared Error, and Histogram Comparison.
 
 ## Metrics Overview
