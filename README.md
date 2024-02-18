@@ -37,7 +37,7 @@ To use Pixel Harmony, you can either download the PixelHarmony.py file from the 
 ## Usage 🚀
 Save the two images you want to compare in the same directory as the script. (1.jpg & 2.jpg)
 
-Run the script by executing python pixelharmony.py in the command line.
+Run the script by executing python PixelHarmony.py in the command line.
 
 The script will calculate and display the SSIM and PSNR scores, along with additional metrics, for the provided images.
 
