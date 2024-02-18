@@ -28,34 +28,40 @@ Root Mean Squared Error (RMSE) calculates the root mean squared difference betwe
 ### Histogram Comparison 📊
 Histogram Comparison calculates the correlation between the histograms of two images. It quantifies how similar the distributions of pixel intensities are between the images, with higher correlation values indicating greater similarity in pixel intensity distributions.
 
-## Installation
+## Installation 💻
+You can install the required libraries using pip:
 ```
 pip install opencv-python scikit-image
 ```
-## Usage
+To use Pixel Harmony, you can either download the PixelHarmony.py file from the releases page or directly from the raw file of PixelHarmony.py in the repository.
+## Usage 🚀
 Save the two images you want to compare in the same directory as the script. (1.jpg & 2.jpg)
 
 Run the script by executing python pixelharmony.py in the command line.
 
 The script will calculate and display the SSIM and PSNR scores, along with additional metrics, for the provided images.
 
-## Example Output
+## Example Output 📝
 ```
 SSIM Score: 0.9606657154431885
-Description: The images are nearly identical, indicating an extremely high level of similarity.
+Description: The images are very similar, with minor differences.
+
 PSNR Score: 37.84524003455975 dB
 Description: The images have moderate quality, with some loss of information.
-Absolute Error: [[ 2.  1.  1. ...  6.  2.  1.]
- [ 5.  5.  5. ...  3.  5.  7.]
- [ 0.  1.  2. ...  1. 12.  2.]
- ...
- [ 2.  2.  2. ...  3.  1.  2.]
- [ 2.  2.  2. ...  5.  3.  0.]
- [ 2.  2.  2. ...  3.  1.  3.]]
+
+Absolute Error:
+[[ 2.,  1.,  1., ...,  6.,  2.,  1.],
+  [ 5.,  5.,  5., ...,  3.,  5.,  7.],
+  [ 0.,  1.,  2., ...,  1., 12.,  2.],
+  ...,
+  [ 2.,  2.,  2., ...,  3.,  1.,  2.],
+  [ 2.,  2.,  2., ...,  5.,  3.,  0.],
+  [ 2.,  2.,  2., ...,  3.,  1.,  3.]]
+
 Mean Absolute Error: 2.4401609757078506
 Normalized Cross-Correlation: 0.9995338916778564
 Root Mean Squared Error: 3.293665264711223
 Histogram Comparison: 0.9994742033940714
 ```
-## Contributions
+## Contributions 🤝
 Contributions are welcome! If you find any issues or have suggestions for improvements, feel free to open an issue or submit a pull request on GitHub.
