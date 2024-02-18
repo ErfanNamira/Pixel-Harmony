@@ -42,7 +42,7 @@ pip install opencv-python scikit-image
 
 اسکریپت امتیازات SSIM و PSNR را به همراه معیارهای دیگر برای تصاویر ارائه شده محاسبه و نمایش می‌دهد.
 
-## خروجی نمونه 📝
+## نمونه خروجی 📝
 ```
 SSIM Score: 0.9606657154431885
 Description: The images are very similar, with minor differences.
