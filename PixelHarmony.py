@@ -1,4 +1,4 @@
-# Pixel Harmony v0.0.1
+# Pixel Harmony v0.0.2
 # ErfanNamira
 # https://github.com/ErfanNamira/Pixel-Harmony
 
@@ -10,6 +10,7 @@
 
 import cv2
 import numpy as np
+import os
 from skimage.metrics import structural_similarity as compare_ssim
 
 def absolute_error(image1, image2):
@@ -54,48 +55,115 @@ def histogram_comparison(image1, image2):
     hist2 = cv2.calcHist([image2], [0], None, [256], [0, 256])
     return cv2.compareHist(hist1, hist2, cv2.HISTCMP_CORREL)
 
-# Load the two frames
-frame1 = cv2.imread('1.jpg')
-frame2 = cv2.imread('2.jpg')
+def resize_image(image, width=None, height=None):
+    if width is None and height is None:
+        return image
+    elif width is None:
+        aspect_ratio = height / float(image.shape[0])
+        new_width = int(image.shape[1] * aspect_ratio)
+        return cv2.resize(image, (new_width, height))
+    elif height is None:
+        aspect_ratio = width / float(image.shape[1])
+        new_height = int(image.shape[0] * aspect_ratio)
+        return cv2.resize(image, (width, new_height))
+    else:
+        return cv2.resize(image, (width, height))
 
-# Convert frames to grayscale
-gray_frame1 = cv2.cvtColor(frame1, cv2.COLOR_BGR2GRAY)
-gray_frame2 = cv2.cvtColor(frame2, cv2.COLOR_BGR2GRAY)
+def compare_two_images():
+    # Prompt the user for the paths to the two images
+    image1_path = input("Enter the path to the first image: ")
+    image2_path = input("Enter the path to the second image: ")
 
-# Calculate SSIM
-ssim_score, _ = compare_ssim(gray_frame1, gray_frame2, full=True)
+    # Load the two frames
+    frame1 = cv2.imread(image1_path)
+    frame2 = cv2.imread(image2_path)
 
-# Calculate PSNR
-mse = np.mean((gray_frame1 - gray_frame2) ** 2)
-if mse == 0:
-    psnr_score = float('inf')
-else:
-    max_pixel = 255.0
-    psnr_score = 20 * np.log10(max_pixel / np.sqrt(mse))
+    # Convert frames to grayscale
+    gray_frame1 = cv2.cvtColor(frame1, cv2.COLOR_BGR2GRAY)
+    gray_frame2 = cv2.cvtColor(frame2, cv2.COLOR_BGR2GRAY)
 
-# Calculate AE, MAE, NCC, RMSE
-ae = absolute_error(gray_frame1, gray_frame2)
-mae = mean_absolute_error(gray_frame1, gray_frame2)
-ncc = normalized_cross_correlation(gray_frame1, gray_frame2)
-rmse = root_mean_squared_error(gray_frame1, gray_frame2)
+    # Resize the images to have the same dimensions
+    max_height = max(gray_frame1.shape[0], gray_frame2.shape[0])
+    max_width = max(gray_frame1.shape[1], gray_frame2.shape[1])
+    gray_frame1 = resize_image(gray_frame1, width=max_width, height=max_height)
+    gray_frame2 = resize_image(gray_frame2, width=max_width, height=max_height)
 
-# Calculate histogram comparison
-hist_comp = histogram_comparison(gray_frame1, gray_frame2)
+    # Calculate SSIM
+    ssim_score, _ = compare_ssim(gray_frame1, gray_frame2, full=True)
 
-# Print the SSIM, PSNR, AE, MAE, NCC, RMSE, and histogram comparison scores with descriptions
-print(f"SSIM Score: {ssim_score}")
-print(f"Description: {ssim_description(ssim_score)}\n")
+    # Calculate PSNR
+    mse = np.mean((gray_frame1 - gray_frame2) ** 2)
+    if mse == 0:
+        psnr_score = float('inf')
+    else:
+        max_pixel = 255.0
+        psnr_score = 20 * np.log10(max_pixel / np.sqrt(mse))
 
-print(f"PSNR Score: {psnr_score} dB")
-print(f"Description: {psnr_description(psnr_score)}\n")
+    # Calculate AE, MAE, NCC, RMSE
+    ae = absolute_error(gray_frame1, gray_frame2)
+    mae = mean_absolute_error(gray_frame1, gray_frame2)
+    ncc = normalized_cross_correlation(gray_frame1, gray_frame2)
+    rmse = root_mean_squared_error(gray_frame1, gray_frame2)
 
-print("Absolute Error:")
-print(np.array2string(ae, separator=', ', prefix=' ', max_line_width=np.inf) + '\n')
+    # Calculate histogram comparison
+    hist_comp = histogram_comparison(gray_frame1, gray_frame2)
 
-print(f"Mean Absolute Error: {mae}")
-print(f"Normalized Cross-Correlation: {ncc}")
-print(f"Root Mean Squared Error: {rmse}")
-print(f"Histogram Comparison: {hist_comp}\n")
+    # Print the SSIM, PSNR, AE, MAE, NCC, RMSE, and histogram comparison scores with descriptions
+    print(f"SSIM Score: {ssim_score}")
+    print(f"Description: {ssim_description(ssim_score)}\n")
 
-# Allow the user to exit the program
-input("Press Enter to exit...")
+    print(f"PSNR Score: {psnr_score} dB")
+    print(f"Description: {psnr_description(psnr_score)}\n")
+
+    print("Absolute Error:")
+    print(np.array2string(ae, separator=', ', prefix=' ', max_line_width=np.inf) + '\n')
+
+    print(f"Mean Absolute Error: {mae}")
+    print(f"Normalized Cross-Correlation: {ncc}")
+    print(f"Root Mean Squared Error: {rmse}")
+    print(f"Histogram Comparison: {hist_comp}\n")
+
+    # Compare the SSIM and PSNR scores to determine the image with higher quality
+    if ssim_score > 0.5 and psnr_score > 30:
+        print("Both images exhibit good quality based on SSIM (>= 0.5) and PSNR (> 30 dB).")
+    elif ssim_score > 0.5:
+        print("The first image demonstrates higher quality based on SSIM (> 0.5).")
+    elif psnr_score > 30:
+        print("The second image showcases higher quality based on PSNR (> 30 dB).")
+    else:
+        print("Both images have poor quality according to SSIM (< 0.5) and PSNR (< 30 dB).")
+
+def compare_images_in_directory(directory):
+    # Code to compare images in a directory
+    pass
+
+def batch_process_images(directory):
+    # Code to batch process images in a directory
+    pass
+
+# Main function to handle user interactions
+def main():
+    print("Pixel Harmony v0.0.1")
+    while True:
+        print("1. Compare two images")
+        print("2. Compare images in a directory")
+        print("3. Batch process images in a directory")
+        print("4. Exit")
+        choice = input("Enter your choice (1/2/3/4): ")
+
+        if choice == '1':
+            compare_two_images()
+        elif choice == '2':
+            directory = input("Enter the directory containing two images: ")
+            compare_images_in_directory(directory)
+        elif choice == '3':
+            directory = input("Enter the directory containing images to batch process: ")
+            batch_process_images(directory)
+        elif choice == '4':
+            print("Exiting...")
+            break
+        else:
+            print("Invalid choice. Please enter 1, 2, 3, or 4.")
+
+if __name__ == "__main__":
+    main()
